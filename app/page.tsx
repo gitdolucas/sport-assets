@@ -17,6 +17,14 @@ export default function Home() {
             React Three Fiber · Rapier · Scales 1:1 between each model
           </span>
         </p>
+        <a
+          href="https://lucas-lima.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="fixed left-6 top-6 z-20 text-xs font-medium text-foreground/40 transition-colors hover:text-foreground/70 sm:left-8 md:left-12"
+        >
+          lucas-lima.com
+        </a>
       </div>
     </main>
   )
