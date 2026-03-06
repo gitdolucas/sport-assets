@@ -208,6 +208,9 @@ function InstancedMeshComponent({ geometry, material, instances, instanceMatrice
       baseMaterial.opacity = 1.0
       baseMaterial.transparent = true
       baseMaterial.shadowSide = THREE.FrontSide
+      // Reduce specular to avoid blown-out highlights in production
+      baseMaterial.roughness = Math.min(1, (baseMaterial.roughness ?? 0.5) + 0.2)
+      baseMaterial.metalness = Math.max(0, (baseMaterial.metalness ?? 0) * 0.5)
     }
     return baseMaterial
   }, [material, color])
@@ -416,7 +419,7 @@ function CornerLights({ positionsRef, bounds }: { positionsRef: React.MutableRef
     }
   })
 
-  const spotProps = { intensity: 4.0, angle: Math.PI / 3, penumbra: 0.5, decay: 2, distance: bounds * 3, castShadow: true }
+  const spotProps = { intensity: 1.2, angle: Math.PI / 3, penumbra: 0.5, decay: 2, distance: bounds * 3, castShadow: true }
   const shadowProps = { 'shadow-mapSize-width': 2048, 'shadow-mapSize-height': 2048, 'shadow-camera-near': 0.1, 'shadow-camera-far': bounds * 3, 'shadow-bias': -0.0001 }
   return (
     <>
@@ -612,10 +615,10 @@ function Scene({ color, modelConfigs, instanceCounts, qualityOverride, simulatio
     <ModelPositionsContext.Provider value={positionsRef}>
       <MousePositionContext.Provider value={mousePositionRef}>
         <Physics gravity={gravity} timeStep="vary" paused={false}>
-          <ambientLight intensity={1.5} />
-          <pointLight position={[5, 5, 5]} intensity={2.0} castShadow />
-          <pointLight position={[-5, -5, -5]} intensity={1.5} castShadow />
-          <directionalLight position={[0, 5, 5]} intensity={1.2} castShadow />
+          <ambientLight intensity={0.5} />
+          <pointLight position={[5, 5, 5]} intensity={0.6} castShadow />
+          <pointLight position={[-5, -5, -5]} intensity={0.4} castShadow />
+          <directionalLight position={[0, 5, 5]} intensity={0.4} castShadow />
           <CornerLights positionsRef={positionsRef} bounds={physicsParams.modelBounds} />
           {instances.length > 0 && modelConfigs.map((config, configIndex) => {
             const modelInstances = instancesByModel.get(configIndex) || []
